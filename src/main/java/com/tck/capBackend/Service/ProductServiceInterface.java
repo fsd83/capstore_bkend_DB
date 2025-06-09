@@ -1,0 +1,19 @@
+package com.tck.capBackend.Service;
+
+import com.tck.capBackend.models.Customer;
+import com.tck.capBackend.models.Product;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ProductServiceInterface {
+
+    //create method signatures
+    public Product save(Product product);
+    public List<Product> findAll();
+    public Optional<Product> findById(Integer id);
+    public Product update(Product product);
+    public void deleteById(Integer id);
+    public  long count();
+
+}

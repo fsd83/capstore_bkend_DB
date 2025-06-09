@@ -1,6 +1,7 @@
 package com.tck.capBackend.Repository;
 
 import com.tck.capBackend.models.Customer;
+import com.tck.capBackend.models.Product;
 import com.tck.capBackend.models.Transaction;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     @Transactional  //operation must complete within one transaction
     @Query(value="DELETE FROM transaction WHERE customer_id = :id", nativeQuery = true)
     void deleteByCustomerId(@Param("id") Integer id);
+
+    List<Transaction> findAllByProduct(Product product);
+
+    @Modifying  //essential for custom queries that delete or update records
+    @Transactional  //operation must complete within one transaction
+    @Query(value="DELETE FROM transaction WHERE product_id = :id", nativeQuery = true)
+    void deleteByProductId(@Param("id") Integer id);
 }

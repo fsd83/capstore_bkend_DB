@@ -2,6 +2,7 @@ package com.tck.capBackend.Controller;
 
 import com.tck.capBackend.Exception.ResourceNotFoundException;
 import com.tck.capBackend.Service.CustomerService;
+import com.tck.capBackend.Service.ProductService;
 import com.tck.capBackend.Service.TransactionService;
 import com.tck.capBackend.models.*;
 import jakarta.validation.Valid;
@@ -23,22 +24,24 @@ public class TransactionController {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    ProductService productService;
+
     @PostMapping("/transaction/add")      // customer_id rep. which customer saved the transaction
     public ResponseEntity<Object> saveTransaction(
             @Valid @RequestBody Transaction transaction) throws ResourceNotFoundException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Customer customer = customerService.findByEmail(authentication.getName()).map((_customer)->{
-                //Frontend need to ensure that transaction with following parameters are
-                //never send to here:
-                // 1) (EnumTransactType.DONATE && EnumStatus.IN_PROGRESS)
-                // 2) (EnumRole.USER && EnumStatus.COMPLETED)
-                  Transaction _transaction = new Transaction(_customer, transaction.getTransactType(), transaction.getStatus());
-                  return transactionService.saveTransaction(_transaction);
+        Customer customer = customerService.findByEmail(authentication.getName()).orElseThrow(() -> new ResourceNotFoundException("Customer not found."));
+        Product product = productService.findById(transaction.getProduct().getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found."));
 
-                }).orElseThrow(() -> new ResourceNotFoundException("Customer not found.")).getCustomer();
-
-            return new ResponseEntity<>(customer, HttpStatus.OK);
+        //Frontend need to ensure that transaction with following parameters are
+        //never send to here:
+        // 1) (EnumTransactType.DONATE && EnumStatus.IN_PROGRESS)
+        // 2) (EnumRole.USER && EnumStatus.COMPLETED)
+        Transaction _transaction = new Transaction(customer, product, transaction.getTransactType(), transaction.getStatus());
+        return new ResponseEntity<>(transactionService.saveTransaction(_transaction), HttpStatus.OK);
+        //return new ResponseEntity<>(customer, HttpStatus.OK);
 
     }
 
@@ -91,7 +94,7 @@ public class TransactionController {
             @PathVariable("customer_id") Integer customer_id) throws ResourceNotFoundException{
 
             Customer customer = customerService.findById(customer_id).map((_customer)->{
-                transactionService.deleteByCustomer(_customer.getId());
+                transactionService.deleteByCustomerId(_customer.getId());
                 return _customer;
             }).orElseThrow(()-> new ResourceNotFoundException("There was an error"));
 
