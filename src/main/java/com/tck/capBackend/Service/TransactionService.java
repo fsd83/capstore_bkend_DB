@@ -2,6 +2,7 @@ package com.tck.capBackend.Service;
 
 import com.tck.capBackend.Repository.TransactionRepository;
 import com.tck.capBackend.models.Customer;
+import com.tck.capBackend.models.Product;
 import com.tck.capBackend.models.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class TransactionService implements TransactionServiceInterface {
 
     @Override
     public Transaction saveTransaction(Transaction transaction) {
+
         return transactionRepository.save(transaction);
     }
 
@@ -49,8 +51,16 @@ public class TransactionService implements TransactionServiceInterface {
         return transactionRepository.findAllByCustomer(customer);
     }
 
-    public void deleteByCustomer(Integer id) {
+    public void deleteByCustomerId(Integer id) {
         transactionRepository.deleteByCustomerId(id);
+    }
+
+    public List<Transaction> findAllByProduct(Product product) {
+        return transactionRepository.findAllByProduct(product);
+    }
+
+    public void deleteByProductId(Integer id) {
+        transactionRepository.deleteByProductId(id);
     }
 
 }

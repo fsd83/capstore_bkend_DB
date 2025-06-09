@@ -16,15 +16,13 @@ public class Customer implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // primary key, auto-incremented
 
     Integer Id;
-    @Column(nullable = false)
-    @NotBlank(message = "First name must not be blank.")
+//    @Column(nullable = false)
+//    @NotBlank(message = "First name must not be blank.")
     @Size(min=2, message = "Min 2 characters for the first name.")
-
     String firstName;
-    @Column(nullable = false)
-    @NotBlank(message = "Last name must not be blank.")
+//    @Column(nullable = false)
+//    @NotBlank(message = "Last name must not be blank.")
     @Size(min=3, message = "Min 3 characters for the last name.")
-
     String lastName;
     @Column(nullable = false, unique = true) // prevents null values & email duplicates
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", // regular expression for email

@@ -20,6 +20,12 @@ public class Transaction {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // resolve BeanSerialization issue
     Customer customer;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)      //manage the parent foreign key constraint
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // resolve BeanSerialization issue
+    Product product;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull(message = "transactType cannot be blank.")
@@ -31,9 +37,9 @@ public class Transaction {
     private EnumStatus status;
 
     //constructor
-
-    public Transaction(Customer customer, EnumTransactType transactType, EnumStatus status) {
+    public Transaction(Customer customer, Product product, EnumTransactType transactType, EnumStatus status) {
         this.customer = customer;
+        this.product = product;
         this.transactType = transactType;
         this.status = status;
     }
@@ -43,7 +49,6 @@ public class Transaction {
     }
 
     //getters
-
     public Integer getId() {
         return id;
     }
@@ -60,6 +65,10 @@ public class Transaction {
         return status;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
     //Setters
 
     public void setCustomer(Customer customer) {
@@ -72,5 +81,9 @@ public class Transaction {
 
     public void setStatus(EnumStatus status) {
         this.status = status;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }
