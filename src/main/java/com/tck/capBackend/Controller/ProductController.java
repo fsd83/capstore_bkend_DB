@@ -7,11 +7,16 @@ import com.tck.capBackend.models.Product;
 import com.tck.capBackend.models.Transaction;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @RestController
 @RequestMapping("/product")
@@ -20,12 +25,33 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    //YAN - edited to add the product, using requestpart
     @PostMapping("/add")
-    public ResponseEntity<Object> addProduct(@Valid @RequestBody Product product) throws Exception{
+    public ResponseEntity<Object> addProduct(@Valid @RequestPart Product product, @RequestPart MultipartFile imageFile) throws Exception{
 
-        // save the product to the database
-        return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
+        //to remove try-catch block
+        try{
+            //savedProduct
+            System.out.println(product);
+            Product savedProduct = productService.addProduct(product, imageFile);
+            // save the product to the database
+            return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    //YAN - TODO - to edit the async and await + fetch part in VS file - listing first. This part is after fetching
+    // to use product_id or id??
+    @GetMapping("/{product_id}/image")
+    public ResponseEntity<byte[]> getImageByProductId(@PathVariable("product_id") Integer product_id){
+        Product product = productService.getProductById(product_id); // or can use findById?
+        byte[] imageFile = product.getImageData();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(product.getImagePath()))
+                .body(imageFile);
     }
 
     @GetMapping("/all")
@@ -41,6 +67,7 @@ public class ProductController {
 
     }
 
+    //YAN - Asking if the param id is which? product_ id or transaction_id?
     //update product
     @PutMapping("/{transaction_id}")
     public ResponseEntity<Object> updateProduct(
