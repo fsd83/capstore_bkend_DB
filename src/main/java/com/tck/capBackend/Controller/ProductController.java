@@ -69,14 +69,16 @@ public class ProductController {
 
     //YAN - Asking if the param id is which? product_ id or transaction_id?
     //update product
-    @PutMapping("/{transaction_id}")
+    @PutMapping("/{product_id}")
     public ResponseEntity<Object> updateProduct(
-            @PathVariable("Product_id") Integer product_id,
+            @PathVariable("product_id") Integer product_id,
             @Valid @RequestBody Product product) throws ResourceNotFoundException{
 
         Product checkProduct = productService.findById(product_id).map((_product) -> {
             _product.setName(product.getName());
             _product.setDescription(product.getDescription());
+            //YAN - set image path - is it a folder in our resources?
+            _product.setImagePath(product.getImagePath());
 
             return productService.save(_product);
         }).orElseThrow(() -> new ResourceNotFoundException("Transaction not found."));
