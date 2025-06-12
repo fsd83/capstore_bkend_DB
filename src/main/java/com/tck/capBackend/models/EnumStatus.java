@@ -1,7 +1,8 @@
 package com.tck.capBackend.models;
 
 public enum EnumStatus {
-    IN_PROGRESS, // 0
-    COMPLETED,
-    ABORTED// 1
+    AVAILABLE,   // 0
+    IN_PROGRESS, // 1
+    COMPLETED,  // 2
+    ABORTED     // 3
 }
