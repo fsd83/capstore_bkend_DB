@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 //@RequestMapping("/user/transaction")
+@CrossOrigin("*")
 public class TransactionController {
     @Autowired
     TransactionService transactionService;
