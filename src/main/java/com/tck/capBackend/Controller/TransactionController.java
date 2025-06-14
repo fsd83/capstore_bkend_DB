@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 //@RequestMapping("/user/transaction")
+@CrossOrigin("*")
 public class TransactionController {
     @Autowired
     TransactionService transactionService;
@@ -103,7 +104,7 @@ public class TransactionController {
     }
 
     //Find all transaction from one customer
-    @GetMapping("/getCustomer/{customer_id}")
+    @GetMapping("/user/getCustomer/{customer_id}")
     public ResponseEntity<Object> getAllTransactionByCustomer(
             @PathVariable("customer_id") Integer customer_id) throws ResourceNotFoundException{
 

@@ -23,7 +23,6 @@ public class RequestResponse {
 
     //constructors
 
-
     public RequestResponse() {
     }
 
