@@ -14,16 +14,15 @@ public class Product {
     @Column(nullable = false)
     @NotBlank(message = "name must not be blank.")
     @Size(min=3, message = "Min 3 characters for name.")
-
     String name;
 
     @Column(nullable = false)
     @NotBlank(message = "Product description cannot be blank.")
     String description;
 
-    @Column(nullable = false)
-    @NotBlank(message = "imagePath must not be blank.")
-    @Size(min=3, message = "Min 3 characters for the imagePath.")
+//    @Column(nullable = false)
+//    @NotBlank(message = "imagePath must not be blank.")
+//    @Size(min=3, message = "Min 3 characters for the imagePath.")
     private String imagePath; // Store the path to the image
 
     @Column(nullable = false)
