@@ -58,7 +58,7 @@ public class TransactionController {
     }
 
     //update transaction
-    @PutMapping("/admin/transaction/{transaction_id}")
+    @PutMapping("/transaction/{transaction_id}")
     public ResponseEntity<Object> updateTransaction(
             @PathVariable("transaction_id") Integer transaction_id,
             @Valid @RequestBody Transaction transaction) throws ResourceNotFoundException{
