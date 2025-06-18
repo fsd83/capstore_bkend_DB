@@ -2,6 +2,7 @@ package com.tck.capBackend.Service;
 
 import com.tck.capBackend.Repository.TransactionRepository;
 import com.tck.capBackend.models.Customer;
+import com.tck.capBackend.models.EnumTransactType;
 import com.tck.capBackend.models.Product;
 import com.tck.capBackend.models.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,10 @@ public class TransactionService implements TransactionServiceInterface {
 
     public void deleteByProductId(Integer id) {
         transactionRepository.deleteByProductId(id);
+    }
+
+    public Optional<Transaction> findByProductAndTransactType(Product product, EnumTransactType type){
+        return transactionRepository.findByProductAndTransactType(product, type);
     }
 
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/user/transaction")
 @CrossOrigin("*")
 public class TransactionController {
     @Autowired
@@ -28,21 +27,27 @@ public class TransactionController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/transaction/add")      // customer_id rep. which customer saved the transaction
-    public ResponseEntity<Object> saveTransaction(
-            @Valid @RequestBody Transaction transaction) throws ResourceNotFoundException {
+    @PostMapping("/user/transaction/request/{id}")      // customer_id rep. which customer saved the transaction
+    public ResponseEntity<Object> saveTransaction(@Valid @PathVariable("id") Integer id) throws ResourceNotFoundException {
 
+        // Get the user who made the request
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Customer customer = customerService.findByEmail(authentication.getName()).orElseThrow(() -> new ResourceNotFoundException("Customer not found."));
-        Product product = productService.findById(transaction.getProduct().getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found."));
+
+        Product product = productService.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found."));
 
         //Frontend need to ensure that transaction with following parameters are
-        //never send to here:
-        // 1) (EnumTransactType.DONATE && EnumStatus.IN_PROGRESS)
-        // 2) (EnumRole.USER && EnumStatus.COMPLETED)
-        Transaction _transaction = new Transaction(customer, product, transaction.getTransactType(), transaction.getStatus());
-        return new ResponseEntity<>(transactionService.saveTransaction(_transaction), HttpStatus.OK);
-        //return new ResponseEntity<>(customer, HttpStatus.OK);
+        Transaction _transaction = new Transaction(customer, product, EnumTransactType.ACQUIRE, EnumStatus.IN_PROGRESS);
+
+        Transaction requestedTransaction = transactionService.saveTransaction(_transaction);
+
+        // Find the transaction whose status is DONATE of the product passed in.
+        // Frontend will need to receive the info. (email) on whom the donor is.
+        // Return the result to of the donor to the requester
+        Transaction donorTransaction = transactionService.findByProductAndTransactType(product, EnumTransactType.DONATE)
+                .orElseThrow(()->new ResourceNotFoundException("Transaction not found."));
+
+        return new ResponseEntity<>(donorTransaction, HttpStatus.OK);
 
     }
 
@@ -58,7 +63,7 @@ public class TransactionController {
     }
 
     //update transaction
-    @PutMapping("/admin/transaction/{transaction_id}")
+    @PutMapping("/transaction/{transaction_id}")
     public ResponseEntity<Object> updateTransaction(
             @PathVariable("transaction_id") Integer transaction_id,
             @Valid @RequestBody Transaction transaction) throws ResourceNotFoundException{

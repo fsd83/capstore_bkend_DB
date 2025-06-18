@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
+//@RequestMapping("/admin")
 @CrossOrigin("*")
 public class AdminCustomerController {
     @Autowired
@@ -26,7 +26,7 @@ public class AdminCustomerController {
 //        this.customerRepository = customerRepository;
 //    }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     public ResponseEntity<Object> addCustomer(@Valid @RequestBody Customer customer) throws Exception{
 
         // save the customer to the database
@@ -35,7 +35,7 @@ public class AdminCustomerController {
 
     }
 
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     public ResponseEntity<Object> allCustomers() throws ResourceNotFoundException{
 
             //retrieve all customers
@@ -48,7 +48,7 @@ public class AdminCustomerController {
 
     }
 
-    @PutMapping("/update/{id}") // Path variable
+    @PutMapping("/admin/update/{id}") // Path variable
     public ResponseEntity<Object> updateCustomer(@PathVariable("id") Integer id, @Valid @RequestBody Customer customer) throws ResourceNotFoundException {
 
         // find the customer, else throw custom exception ResourceNotFoundException
@@ -68,7 +68,7 @@ public class AdminCustomerController {
 
     }
 
-    @GetMapping("getInfo/{id}")    //path variable
+    @GetMapping("/admin/getInfo/{id}")    //path variable
     public ResponseEntity<Object> getCustomerById(@PathVariable("id") Integer id) throws ResourceNotFoundException {
 
             //Get the customer by Id and return the response
@@ -78,7 +78,7 @@ public class AdminCustomerController {
 
     }
 
-    @DeleteMapping("/{id}")    //path variable
+    @DeleteMapping("/admin/{id}")    //path variable
     public ResponseEntity<Object> deleteCustomerById(@PathVariable("id") Integer id) throws ResourceNotFoundException {
 
             //Get the customer by Id and return the response
@@ -89,7 +89,7 @@ public class AdminCustomerController {
 
     }
 
-    @GetMapping("")
+    @GetMapping("/restricted")
     public ResponseEntity<Object> getCustomerByEmailOrLastName(
             @RequestParam("email") String email,                            // email is a url param
             @RequestParam("lastName") String lastName) throws ResourceNotFoundException{    // lastName is a url param
