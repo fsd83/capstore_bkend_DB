@@ -84,9 +84,9 @@ public class ProductController {
     }
 
     //update product
-    @PutMapping("/{transaction_id}")
+    @PutMapping("/{product_id}")
     public ResponseEntity<Object> updateProduct(
-            @PathVariable("Product_id") Integer product_id,
+            @PathVariable("product_id") Integer product_id,
             @Valid @RequestBody Product product) throws ResourceNotFoundException{
 
         Product checkProduct = productService.findById(product_id).map((_product) -> {
@@ -99,8 +99,12 @@ public class ProductController {
         return new ResponseEntity<>(checkProduct, HttpStatus.OK);
     }
 
-    @GetMapping("getInfo/{id}")    //path variable
+    @GetMapping("getinfo/{id}")    //path variable
     public ResponseEntity<Object> getProductById(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+
+        // 1. Find the USER
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Customer customer = customerService.findByEmail(authentication.getName()).orElseThrow(() -> new ResourceNotFoundException("Customer not found."));
 
         //Get the customer by Id and return the response
         Product product = productService.findById(id).orElseThrow(()->new ResourceNotFoundException("Customer not found."));
